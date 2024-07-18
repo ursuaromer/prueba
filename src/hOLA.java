@@ -17,6 +17,7 @@ public class hOLA {
         // TODO code application logic here
         
         System.out.println("Hola mund");
+        System.out.println("Estoy haciendo una prueba en github desde netbeands hasta java apliaction");
     }
     
 }
