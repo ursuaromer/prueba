@@ -14,7 +14,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.SwingWorker;
-import  Reporte.Reporte;
+import Reporte.Reporte;
+
 /**
  *
  * @author ursua
@@ -28,47 +29,48 @@ public class Ingreso extends javax.swing.JFrame {
         initComponents();
         setLocationRelativeTo(null);
         setResizable(false);
-        rsscalelabel.RSScaleLabel.setScaleLabel(jLabel1,"src/imagen/Enter.png");
+        rsscalelabel.RSScaleLabel.setScaleLabel(jLabel1, "src/imagen/Enter.png");
         //rsscalelabel.RSScaleLabel.setScaleLabel(jLabel6,"src/imagen/reg.png");
-        rsscalelabel.RSScaleLabel.setScaleLabel(jLabel2,"src/imagen/logosistemas.jpg");
+        rsscalelabel.RSScaleLabel.setScaleLabel(jLabel2, "src/imagen/logosistemas.jpg");
     }
-     private void mostrarCargando(ActionEvent evt, JFrame nuevaInterfaz) {
-    // Crear una imagen del MenuInicio actual
-    BufferedImage screenshot = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
-    paint(screenshot.getGraphics());
 
-    // Aplicar efecto de desenfoque
-    BufferedImage blurredScreenshot = BlurEffect.applyBlur(screenshot, 10);
+    private void mostrarCargando(ActionEvent evt, JFrame nuevaInterfaz) {
+        // Crear una imagen del MenuInicio actual
+        BufferedImage screenshot = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
+        paint(screenshot.getGraphics());
 
-    // Crear un JLabel con la imagen desenfocada
-    JLabel blurredBackground = new JLabel(new ImageIcon(blurredScreenshot));
-    blurredBackground.setBounds(0, 0, getWidth(), getHeight());
+        // Aplicar efecto de desenfoque
+        BufferedImage blurredScreenshot = BlurEffect.applyBlur(screenshot, 10);
 
-    // Agregar el fondo desenfocado al contenido del MenuInicio
-    JLayeredPane layeredPane = getLayeredPane();
-    layeredPane.add(blurredBackground, JLayeredPane.PALETTE_LAYER);
+        // Crear un JLabel con la imagen desenfocada
+        JLabel blurredBackground = new JLabel(new ImageIcon(blurredScreenshot));
+        blurredBackground.setBounds(0, 0, getWidth(), getHeight());
 
-    Cargando cargando = new Cargando(this);
-    SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
-        @Override
-        protected Void doInBackground() throws Exception {
-            Thread.sleep(2000); // Simula un tiempo de carga
-            return null;
-        }
+        // Agregar el fondo desenfocado al contenido del MenuInicio
+        JLayeredPane layeredPane = getLayeredPane();
+        layeredPane.add(blurredBackground, JLayeredPane.PALETTE_LAYER);
 
-        @Override
-        protected void done() {
-            layeredPane.remove(blurredBackground);
-            layeredPane.revalidate();
-            layeredPane.repaint();
-            cargando.dispose();
-            nuevaInterfaz.setVisible(true);
-            dispose();
-        }
-    };
-    worker.execute();
-    cargando.setVisible(true);
-}
+        Cargando cargando = new Cargando(this);
+        SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+            @Override
+            protected Void doInBackground() throws Exception {
+                Thread.sleep(2000); // Simula un tiempo de carga
+                return null;
+            }
+
+            @Override
+            protected void done() {
+                layeredPane.remove(blurredBackground);
+                layeredPane.revalidate();
+                layeredPane.repaint();
+                cargando.dispose();
+                nuevaInterfaz.setVisible(true);
+                dispose();
+            }
+        };
+        worker.execute();
+        cargando.setVisible(true);
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -116,7 +118,7 @@ public class Ingreso extends javax.swing.JFrame {
                 .addContainerGap(74, Short.MAX_VALUE))
         );
 
-        jPanel2.setBackground(new java.awt.Color(0, 51, 153));
+        jPanel2.setBackground(new java.awt.Color(102, 102, 255));
 
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagen/user.png"))); // NOI18N
 
@@ -229,10 +231,10 @@ public class Ingreso extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btingresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btingresarActionPerformed
-        
-        Reporte repor= new Reporte();
+
+        Reporte repor = new Reporte();
         mostrarCargando(evt, repor);
-        
+
     }//GEN-LAST:event_btingresarActionPerformed
 
     /**

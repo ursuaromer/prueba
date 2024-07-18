@@ -32,10 +32,13 @@ import java.io.FileOutputStream;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.FontFactory;
 import java.io.IOException;
+import java.net.URL;
 import javax.activation.DataHandler;
 import javax.activation.FileDataSource;
 import java.util.Timer;
 import java.util.TimerTask;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 
 public class Scaneador extends javax.swing.JFrame {
 
@@ -48,9 +51,46 @@ public class Scaneador extends javax.swing.JFrame {
         initComponents();
         setLocationRelativeTo(null);
         setTitle("SCANEADOR");
+        playMP3("/Sonidos/piti.mp3");  // Nota la barra al principio
         initWebcam();
         startScan();
 
+        //rsscalelabel.RSScaleLabel.setScaleLabel(jLabel2,"src/imagen/escanear.png");
+    }
+
+    private void playMP3(String mp3File) {
+        try {
+            System.out.println("Intentando reproducir: " + mp3File);
+            URL resource = getClass().getResource(mp3File);
+            if (resource == null) {
+                System.out.println("No se pudo encontrar el archivo de sonido: " + mp3File);
+                return;
+            }
+            System.out.println("Recurso encontrado: " + resource);
+
+            String path = resource.toURI().toString();
+            System.out.println("Path del archivo: " + path);
+            Media media = new Media(path);
+            MediaPlayer mediaPlayer = new MediaPlayer(media);
+
+            mediaPlayer.setOnReady(() -> {
+                System.out.println("Audio listo para reproducir");
+                mediaPlayer.play();
+            });
+
+            mediaPlayer.setOnEndOfMedia(() -> {
+                System.out.println("Reproducción finalizada");
+                mediaPlayer.dispose();
+            });
+
+            mediaPlayer.setOnError(() -> {
+                System.out.println("Error en la reproducción: " + mediaPlayer.getError());
+            });
+
+        } catch (Exception e) {
+            System.out.println("Error al configurar la reproducción: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     private String generatePDF(String[] data, String formattedDate, String formattedTime) {
@@ -78,7 +118,7 @@ public class Scaneador extends javax.swing.JFrame {
             Font headerFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 12);
             Font contentFont = FontFactory.getFont(FontFactory.HELVETICA, 12);
 
-            String[] fields = {"Nombre", "Apellido", "DNI", "Email", "Carrera", "Ciclo", "Curso", "Fecha de registro", "Hora de registro"};
+            String[] fields = {"Nombre", "Apellido", "DNI", "Carrera", "Ciclo", "Curso", "Fecha de registro", "Hora de registro"};
 
             for (int i = 0; i < fields.length; i++) {
                 PdfPCell headerCell = new PdfPCell(new Phrase(fields[i], headerFont));
@@ -87,9 +127,12 @@ public class Scaneador extends javax.swing.JFrame {
                 table.addCell(headerCell);
 
                 PdfPCell valueCell;
-                if (i < 7) {
+                if (i < 3) {
                     valueCell = new PdfPCell(new Phrase(data[i], contentFont));
-                } else if (i == 7) {
+                } else if (i < 6) {
+                    // Ajustamos los índices para saltar el email
+                    valueCell = new PdfPCell(new Phrase(data[i + 1], contentFont));
+                } else if (i == 6) {
                     valueCell = new PdfPCell(new Phrase(formattedDate, contentFont));
                 } else {
                     valueCell = new PdfPCell(new Phrase(formattedTime, contentFont));
@@ -339,7 +382,7 @@ public class Scaneador extends javax.swing.JFrame {
     }
 
     private void showData(String[] data) {
-       /* SwingUtilities.invokeLater(() -> {
+        /* SwingUtilities.invokeLater(() -> {
             try {
                 // ... (su código existente)
 
@@ -382,7 +425,6 @@ public class Scaneador extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         jButton2 = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jComboBox1 = new javax.swing.JComboBox<>();
 
@@ -393,28 +435,24 @@ public class Scaneador extends javax.swing.JFrame {
         jPanel1.setForeground(new java.awt.Color(0, 255, 255));
         jPanel1.setLayout(new java.awt.GridBagLayout());
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 380, Short.MAX_VALUE)
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 360, Short.MAX_VALUE)
-        );
-
+        jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 255, 255)));
+        jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = 2;
         gridBagConstraints.gridheight = 3;
-        gridBagConstraints.ipadx = 380;
-        gridBagConstraints.ipady = 360;
+        gridBagConstraints.ipadx = 410;
+        gridBagConstraints.ipady = 390;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(40, 184, 0, 0);
+        gridBagConstraints.insets = new java.awt.Insets(50, 190, 0, 0);
         jPanel1.add(jPanel2, gridBagConstraints);
 
-        jButton2.setText("VOLVER A MENU");
+        jButton2.setForeground(new java.awt.Color(255, 255, 255));
+        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagen/atras.png"))); // NOI18N
+        jButton2.setText("RETROCESO");
+        jButton2.setContentAreaFilled(false);
+        jButton2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
@@ -422,55 +460,45 @@ public class Scaneador extends javax.swing.JFrame {
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 5;
-        gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.ipadx = 18;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.ipadx = 43;
+        gridBagConstraints.ipady = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(23, 24, 93, 0);
+        gridBagConstraints.insets = new java.awt.Insets(30, 50, 38, 0);
         jPanel1.add(jButton2, gridBagConstraints);
 
         jLabel1.setFont(new java.awt.Font("Verdana", 1, 24)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(0, 255, 255));
         jLabel1.setText("SCANNER DE ASISTENCIA");
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.ipadx = 13;
         gridBagConstraints.ipady = 20;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(0, 204, 0, 0);
+        gridBagConstraints.insets = new java.awt.Insets(0, 210, 0, 0);
         jPanel1.add(jLabel1, gridBagConstraints);
-
-        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Imagen de WhatsApp 2024-07-15 a las 16.58.58_9395daf4.jpg"))); // NOI18N
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.gridheight = 2;
-        gridBagConstraints.ipady = 10;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(0, 20, 0, 0);
-        jPanel1.add(jLabel2, gridBagConstraints);
 
         jLabel3.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));
         jLabel3.setText("CURSO");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 3;
-        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridy = 1;
         gridBagConstraints.ipadx = 22;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(40, 80, 0, 0);
+        gridBagConstraints.insets = new java.awt.Insets(50, 140, 0, 0);
         jPanel1.add(jLabel3, gridBagConstraints);
 
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "INGLES PARA LA COMUNICACION ORAL", "PROGRAMACION DISTRIBUIDA", "PROGRAMACION CONCURRENTE", "PROGRAMACION ORIENTADA A OBJETOS", "INVESTIGACION TECNOLOGICA", "EXPERIENCIA FORMATICAS SIT. REAL. TRAB.", "MODELAMIENTO DE SOFTWARE", "ARQUITECTURA DE BASE DE DATOS" }));
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridx = 3;
         gridBagConstraints.gridy = 2;
-        gridBagConstraints.gridheight = 2;
+        gridBagConstraints.gridwidth = 2;
         gridBagConstraints.ipadx = 105;
         gridBagConstraints.ipady = 14;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(30, 10, 0, 0);
+        gridBagConstraints.insets = new java.awt.Insets(24, 140, 0, 2);
         jPanel1.add(jComboBox1, gridBagConstraints);
 
         getContentPane().add(jPanel1, "card2");
@@ -522,7 +550,8 @@ public class Scaneador extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(Scaneador.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-
+        com.sun.javafx.application.PlatformImpl.startup(() -> {
+        });
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
@@ -535,7 +564,6 @@ public class Scaneador extends javax.swing.JFrame {
     private javax.swing.JButton jButton2;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
