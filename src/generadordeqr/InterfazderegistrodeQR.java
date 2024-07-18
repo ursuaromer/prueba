@@ -66,6 +66,7 @@ public class InterfazderegistrodeQR extends javax.swing.JFrame {
         jLabel7 = new javax.swing.JLabel();
         ciclos = new javax.swing.JComboBox<>();
         jLabel8 = new javax.swing.JLabel();
+        jTextField1 = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -142,6 +143,9 @@ public class InterfazderegistrodeQR extends javax.swing.JFrame {
 
         jLabel8.setText("CODIGO ESTU");
         jPanel1.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(121, 20, 120, -1));
+
+        jTextField1.setText("jTextField1");
+        jPanel1.add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 10, 260, -1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -303,6 +307,7 @@ public class InterfazderegistrodeQR extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField nombre;
     // End of variables declaration//GEN-END:variables
 }
